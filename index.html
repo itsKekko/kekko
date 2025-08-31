@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>BuyBack</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --accent-color: #00bfa6;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      color: var(--accent-color);
+      font-family: Verdana, sans-serif;
+      font-size: 2em;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 80%;
+      max-width: 1200px;
+      margin: 40px auto;
+      height: 65vh;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .slider-wrapper {
+      display: flex;
+      transition: transform 0.8s ease-in-out;
+      height: 100%;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      position: relative;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: white;
+      border-radius: 10px;
+    }
+
+    .action-box {
+      position: absolute;
+      top: 50%;
+      left: 150px;
+      transform: translateY(-50%);
+      background: white;
+      border: 2px solid var(--accent-color);
+      border-radius: 12px;
+      padding: 16px 24px;
+      z-index: 2;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .action-box button {
+      background: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .action-box button:hover {
+      opacity: 0.9;
+    }
+
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.3);
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 3;
+      border-radius: 50%;
+    }
+
+    .nav-btn.prev {
+      left: 10px;
+    }
+
+    .nav-btn.next {
+      right: 10px;
+    }
+
+    .dots {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 3;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.3);
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: var(--accent-color);
+    }
+
+    @media (max-width: 768px) {
+      .slider-container {
+        width: 90%;
+      }
+      .action-box {
+        left: 80px;
+        padding: 12px 20px;
+      }
+      .action-box button {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .action-box {
+        top: auto;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="logo">BuyBack</h1>
+  </header>
+
+  <main>
+    <div class="slider-container">
+      <div class="slider-wrapper" id="sliderWrapper">
+        <div class="slide"><img src="slider-1-cocktail-nuovo.png" alt="Cocktail"></div>
+        <div class="slide"><img src="slider-2-ragazza-occhiali.png" alt="Ragazza con occhiali"></div>
+        <div class="slide"><img src="slider-3-tuta-newyork.png" alt="Tuta New York"></div>
+      </div>
+
+      <div class="action-box">
+        <button onclick="window.location.href='prodotti.html'">Compra ora!</button>
+      </div>
+
+      <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+      <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+
+      <div class="dots" id="dotsContainer"></div>
+    </div>
+  </main>
+
+  <script>
+    const wrapper = document.getElementById('sliderWrapper');
+    const dotsContainer = document.getElementById('dotsContainer');
+    const totalSlides = wrapper.children.length;
+    let currentIndex = 0;
+    let autoSlideInterval;
+
+    function createDots() {
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsContainer.appendChild(dot);
+      }
+      updateDots();
+    }
+
+    function updateDots() {
+      dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+
+    function goToSlide(index) {
+      currentIndex = (index + totalSlides) % totalSlides;
+      wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+      updateDots();
+    }
+
+    function changeSlide(step) {
+      goToSlide(currentIndex + step);
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(() => changeSlide(1), 7000);
+    }
+
+    function stopAutoSlide() {
+      clearInterval(autoSlideInterval);
+    }
+
+    wrapper.addEventListener('mouseenter', stopAutoSlide);
+    wrapper.addEventListener('mouseleave', startAutoSlide);
+
+    createDots();
+    startAutoSlide();
+  </script>
+</body>
+</html>
+
